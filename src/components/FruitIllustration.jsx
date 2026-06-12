@@ -97,6 +97,49 @@ function Answer({ text }) {
   );
 }
 
+function ColumnAdditionView({ a, b, answer, showAnswer }) {
+  const aOnes = a % 10;
+  const bOnes = b % 10;
+  const onesSum = aOnes + bOnes;
+  const carry1 = onesSum >= 10 ? 1 : 0;
+
+  const aStr = String(a);
+  const bStr = String(b);
+  const ansStr = String(answer);
+  const width = Math.max(aStr.length, bStr.length, ansStr.length);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '4px 0' }}>
+      <Label text="たて式でかんがえよう！" />
+      {carry1 > 0 && (
+        <div style={{ fontSize: 12, color: '#e74c3c', backgroundColor: '#fff3f3', borderRadius: 8, padding: '3px 10px', marginBottom: 8 }}>
+          1のくらい: {aOnes}＋{bOnes}＝{onesSum} → くり上がり！
+        </div>
+      )}
+      <div style={{
+        fontFamily: 'monospace',
+        fontSize: 38,
+        fontWeight: 'bold',
+        color: '#2c3e50',
+        border: '2px solid #ddd',
+        borderRadius: 14,
+        padding: '12px 28px',
+        backgroundColor: '#fafafa',
+        minWidth: 140,
+      }}>
+        <div style={{ textAlign: 'right', letterSpacing: 4 }}>{aStr.padStart(width, ' ')}</div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'baseline', borderBottom: '3px solid #2c3e50', paddingBottom: 6, marginBottom: 6 }}>
+          <span style={{ fontSize: 24, color: '#555', marginRight: 4 }}>＋</span>
+          <span style={{ letterSpacing: 4 }}>{bStr.padStart(width, ' ')}</span>
+        </div>
+        <div style={{ textAlign: 'right', letterSpacing: 4, color: showAnswer ? '#2ecc71' : '#aaa' }}>
+          {showAnswer ? ansStr.padStart(width, ' ') : '？'.padStart(width, ' ')}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AdditionView({ a, b, pattern, answer, fruitA, fruitB, showAnswer }) {
   if (pattern === 'hole_left') {
     return (
@@ -200,7 +243,9 @@ export default function FruitIllustration({ question, showAnswer = true }) {
         alignItems: 'center',
       }}
     >
-      {op === '+' ? (
+      {pattern === 'carry2' ? (
+        <ColumnAdditionView a={a} b={b} answer={answer} showAnswer={showAnswer} />
+      ) : op === '+' ? (
         <AdditionView a={a} b={b} pattern={pattern} answer={answer} fruitA={fruitA} fruitB={fruitB} showAnswer={showAnswer} />
       ) : (
         <SubtractionView a={a} b={b} pattern={pattern} answer={answer} fruitA={fruitA} fruitB={fruitB} showAnswer={showAnswer} />

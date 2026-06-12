@@ -70,7 +70,36 @@ function generateSubtraction(pattern, level) {
   return { display: `${a} － ${b} ＝ ？`, answer: diff, a, b, op: '-', pattern };
 }
 
+function generateCarry2(level) {
+  let a, b, attempts = 0;
+  if (level === 1) {
+    // 2桁+1桁 くり上がり: aの一の位 + b >= 10
+    do {
+      a = Math.floor(Math.random() * 19) + 11; // 11-29
+      b = Math.floor(Math.random() * 9) + 1;   // 1-9
+      attempts++;
+    } while ((a % 10) + b < 10 && attempts < 200);
+  } else if (level === 2) {
+    // 2桁+2桁 くり上がり小: 一の位の和 >= 10、結果 <= 99
+    do {
+      a = Math.floor(Math.random() * 40) + 11; // 11-50
+      b = Math.floor(Math.random() * 40) + 11; // 11-50
+      attempts++;
+    } while (((a % 10) + (b % 10) < 10 || a + b > 99) && attempts < 200);
+    if (attempts >= 200) { a = 23; b = 17; }
+  } else {
+    // 2桁+2桁 くり上がり大: 一の位の和 >= 10、結果 100超えも可
+    do {
+      a = Math.floor(Math.random() * 60) + 20; // 20-79
+      b = Math.floor(Math.random() * 60) + 20; // 20-79
+      attempts++;
+    } while ((a % 10) + (b % 10) < 10 && attempts < 200);
+  }
+  return { display: `${a} ＋ ${b} ＝ ？`, answer: a + b, a, b, op: '+', pattern: 'carry2' };
+}
+
 function generateQuestion(category, level) {
+  if (category === 'carrying2') return generateCarry2(level);
   const isAdd = category === 'mixed' ? Math.random() > 0.5 : category === 'addition';
   const sourceLevel = pickSourceLevel(level);
   const pattern = pickPattern(sourceLevel);
@@ -215,7 +244,7 @@ export default function GameScreen({ route, navigation }) {
 
   const levelLabel = level === 1 ? 'かんたん' : level === 2 ? 'ふつう' : 'むずかしい';
   const levelColor = level === 1 ? '#4ECDC4' : level === 2 ? '#F7B731' : '#FC5C65';
-  const categoryLabel = category === 'addition' ? 'たし算' : category === 'subtraction' ? 'ひき算' : 'まざった';
+  const categoryLabel = category === 'addition' ? 'たし算' : category === 'subtraction' ? 'ひき算' : category === 'carrying2' ? 'くり上がり2桁' : 'まざった';
   const bearExpression = retryMode ? 'sad' : (selected === question.answer && selected !== null) ? 'happy' : 'normal';
 
   const progressPct = ((questionNum - 1) / TOTAL_QUESTIONS) * 100;

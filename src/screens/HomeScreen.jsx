@@ -24,6 +24,13 @@ const CATEGORIES = [
     description: 'たし算とひき算をまぜて！',
     colors: ['#A855F7', '#6366F1'],
   },
+  {
+    id: 'carrying2',
+    label: 'くり上がり2桁',
+    emoji: '🔢',
+    description: '2けたのくり上がりにちょうせん！',
+    colors: ['#FF9A3C', '#FF6348'],
+  },
 ];
 
 const LEVELS = [
@@ -31,6 +38,10 @@ const LEVELS = [
   { id: 2, label: 'ふつう',   emoji: '⭐⭐', color: '#F7B731' },
   { id: 3, label: 'むずかしい', emoji: '⭐⭐⭐', color: '#FC5C65' },
 ];
+
+const LEVEL_DESCS = {
+  carrying2: { 1: '2桁＋1桁', 2: '2桁＋2桁(小)', 3: '2桁＋2桁(大)' },
+};
 
 export default function HomeScreen({ navigation }) {
   const [wrongQuestions, setWrongQuestions] = useState([]);
@@ -84,27 +95,31 @@ export default function HomeScreen({ navigation }) {
 
             {/* レベルボタン */}
             <div style={{ display: 'flex', justifyContent: 'space-around', padding: '16px 12px', gap: 10 }}>
-              {LEVELS.map((lv) => (
-                <button
-                  key={lv.id}
-                  onClick={() => navigation.navigate('Game', { category: cat.id, level: lv.id })}
-                  style={{
-                    flex: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    paddingTop: 14,
-                    paddingBottom: 14,
-                    borderRadius: 16,
-                    border: `2.5px solid ${lv.color}`,
-                    backgroundColor: '#fff',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <span style={{ fontSize: 18 }}>{lv.emoji}</span>
-                  <span style={{ fontSize: 13, fontWeight: 'bold', marginTop: 4, color: lv.color }}>{lv.label}</span>
-                </button>
-              ))}
+              {LEVELS.map((lv) => {
+                const subDesc = LEVEL_DESCS[cat.id]?.[lv.id];
+                return (
+                  <button
+                    key={lv.id}
+                    onClick={() => navigation.navigate('Game', { category: cat.id, level: lv.id })}
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      paddingTop: 14,
+                      paddingBottom: 14,
+                      borderRadius: 16,
+                      border: `2.5px solid ${lv.color}`,
+                      backgroundColor: '#fff',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <span style={{ fontSize: 18 }}>{lv.emoji}</span>
+                    <span style={{ fontSize: 13, fontWeight: 'bold', marginTop: 4, color: lv.color }}>{lv.label}</span>
+                    {subDesc && <span style={{ fontSize: 10, color: '#888', marginTop: 2 }}>{subDesc}</span>}
+                  </button>
+                );
+              })}
             </div>
           </div>
         ))}
