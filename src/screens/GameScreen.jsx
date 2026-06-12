@@ -137,11 +137,11 @@ export default function GameScreen({ route, navigation }) {
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
-  function finishGame(finalWrong) {
+  function finishGame(finalWrong, finalScore, finalCorrectCount) {
     saveWrongQuestions(finalWrong);
     navigation.replace('Result', {
-      score,
-      correct: correctCount,
+      score: finalScore,
+      correct: finalCorrectCount,
       total: TOTAL_QUESTIONS,
       wrongQuestions: finalWrong,
       category,
@@ -149,9 +149,9 @@ export default function GameScreen({ route, navigation }) {
     });
   }
 
-  function advanceQuestion(newWrong) {
+  function advanceQuestion(newWrong, newScore, newCorrectCount) {
     if (questionNum >= TOTAL_QUESTIONS) {
-      finishGame(newWrong);
+      finishGame(newWrong, newScore, newCorrectCount);
       return;
     }
     const nextNum = questionNum + 1;
@@ -170,14 +170,16 @@ export default function GameScreen({ route, navigation }) {
     const correct = choice === question.answer;
 
     if (correct) {
+      const newScore = score + 10 * level;
+      const newCorrectCount = correctCount + 1;
       setStreak((s) => s + 1);
-      setScore((s) => s + 10 * level);
-      setCorrectCount((c) => c + 1);
+      setScore(newScore);
+      setCorrectCount(newCorrectCount);
       setFeedbackEmoji(EMOJIS_OK[Math.floor(Math.random() * EMOJIS_OK.length)]);
       setShowFeedback(true);
       setCardClass('card-bounce');
       setTimeout(() => setCardClass(''), 500);
-      timerRef.current = setTimeout(() => advanceQuestion(wrongList), 1200);
+      timerRef.current = setTimeout(() => advanceQuestion(wrongList, newScore, newCorrectCount), 1200);
     } else {
       setStreak(0);
       const newWrong = wrongList.some((w) => w.display === question.display)
@@ -201,7 +203,7 @@ export default function GameScreen({ route, navigation }) {
     if (correct) {
       setCardClass('card-bounce');
       setTimeout(() => setCardClass(''), 500);
-      timerRef.current = setTimeout(() => advanceQuestion(wrongList), 1000);
+      timerRef.current = setTimeout(() => advanceQuestion(wrongList, score, correctCount), 1000);
     } else {
       setCardClass('card-shake');
       timerRef.current = setTimeout(() => {
