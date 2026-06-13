@@ -124,6 +124,30 @@ export default function HomeScreen({ navigation }) {
           </div>
         ))}
 
+        {/* 九九ボタン */}
+        <button
+          onClick={() => navigation.navigate('KukuMenu')}
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 16,
+            background: 'linear-gradient(135deg, #26C6DA, #00838F)',
+            borderRadius: 24,
+            padding: '20px 24px',
+            marginBottom: 20,
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            textAlign: 'left',
+          }}
+        >
+          <span style={{ fontSize: 40 }}>📖</span>
+          <div>
+            <p style={{ fontSize: 22, fontWeight: 'bold', color: '#fff' }}>九九をおぼえよう</p>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.9)', marginTop: 3 }}>ひょうをみたり れんしゅうしたりしよう！</p>
+          </div>
+        </button>
+
         {/* まちがいノート */}
         <button
           onClick={() => setNoteOpen((o) => !o)}
